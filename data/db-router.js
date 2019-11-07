@@ -102,4 +102,38 @@ router.post('/:id/comments', (req, res) => {
         })
 })
 
+router.delete('/:id', (req, res) => {
+    let postObject = 
+
+             Data.findById(req.params.id)
+                .then(post => {
+                    res.status(200).json(post)
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: "The post information could not be retrieved.",
+                        err
+                    })
+                });
+    // const post = {title: req.title, content: req.content, id: req.params.id};
+    Data.remove(req.params.id)
+        .then(id => {
+            // console.log(post)
+            if(id){
+
+                res.status(200).json(postObject)
+            } else {
+                res.status(404).json({
+                    errorMessage: 'The post with the specified ID does not exist.'
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({
+                errorMessage: 'The post could not be removed',
+                err
+            })
+        })
+})
+
 module.exports = router;
