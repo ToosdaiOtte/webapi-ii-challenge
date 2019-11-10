@@ -134,6 +134,44 @@ router.delete('/:id', (req, res) => {
                 err
             })
         })
+});
+
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const title = req.body.title;
+    const contents = req.body.contents;
+    // const post = {...req.body, id: req.params.id}
+
+    if(!title && contents) {
+        res.status(400).json({
+            errorMessage: "Please provide title and contents for the post."
+        })
+    }
+
+    Data.update(id, {title, contents})
+        .then(updated => {
+            console.log(updated);
+            if(updated){
+               Data.findById(id)
+                .then(post => {
+                    console.log(post)
+                    if(post){
+                        res.status(200).json(post)
+                    } 
+                    else {
+                        res.status(400).json({
+                            errorMessage: "The post with the ID does not exist."
+                        })
+                    }
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        errorMessage: "There was an error deleting the post.",
+                        err
+                    })
+                })  
+            }
+        })
 })
 
 module.exports = router;
